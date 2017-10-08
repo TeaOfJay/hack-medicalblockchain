@@ -1,14 +1,22 @@
 /**
- * Track the trade of a commodity from one trader to another
- * @param {org.blockchainboyz.record.UpdateRecord} transact 
- * @transaction
+ * New access control file
+ */
+ rule AllAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.Participant"
+     operation: ALL
+     resource: "org.hyperledger.composer.system.**"
+     action: ALLOW
+ }
+
+/**
+*
 */
-function UpdateRecord(transact) {
-  var iso = transact.updateTime;
-  transact.record.entry = iso;
-  return getAssetRegistry('org.blockchainboyz.record.MedicalRecord')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(transact.record);
-        });
-  
+rule PatientAccess {
+  description: "PatientAccess - grant patient read-only to records."
+  participant(user): "org.blockchainboyz.users.Patient"
+  operation: READ
+  resource(res): "org.blockchainboyz.record.MedicalRecord"
+  condition:(res.owner.patientId == user.patientId)
+  action: ALLOW
 }
