@@ -17,7 +17,7 @@
   "dependencies": {
   },
   "scripts": {
-    "prepublish": "mkdirp ./dist ; composer archive create --sourceType dir --sourceName . -a ./dist/my-network.bna"
+    "prepublish": "mkdirp ./dist ; composer archive create --sourceType dir --sourceName . -a ./dist/my-network.bna",
     "build-archives": "gulp --gulpfile .travis/gulp.js"
   },
   "devDependencies": {
