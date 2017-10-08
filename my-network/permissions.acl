@@ -1,3 +1,22 @@
+
+rule PatientAccess{
+	description: "allow patients to access records"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.MedicalRecord"
+	condition: (r.patient.patientId == p.patientId)
+	action: ALLOW
+}
+
+rule PatientSelfAccess{
+	description: "allow patients to access records"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.Patient"
+	condition: (r.patientId == p.patientId)
+	action: ALLOW	
+}
+
 rule ProviderPatientAccess{
   	description: "allow providers to access patients"
 	participant(p): "org.blockchainboyz.medicalrecord.Provider"
@@ -16,23 +35,7 @@ rule ProviderAccess{
 	action: ALLOW
 }
 
-rule PatientAccess{
-	description: "allow patients to access records"
-	participant(p): "org.blockchainboyz.medicalrecord.Patient"
-	operation: READ
-	resource(r): "org.blockchainboyz.medicalrecord.MedicalRecord"
-	condition: (r.patient == p)
-	action: ALLOW
-}
 
-rule PatientSelfAccess{
-	description: "allow patients to access records"
-	participant(p): "org.blockchainboyz.medicalrecord.Patient"
-	operation: READ
-	resource(r): "org.blockchainboyz.medicalrecord.Patient"
-	condition: (r == p)
-	action: ALLOW	
-}
 
 
 rule ProviderUpdateRecord{
@@ -41,7 +44,7 @@ rule ProviderUpdateRecord{
 	operation: UPDATE
 	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
 	transaction(tx): "org.blockchainboyz.medicalrecord.UpdateRecord"
-	condition: (tx.record.provider == p)
+	condition: (tx.record.provider.providerId == p.providerId)
 	action: ALLOW
 }
 rule ProviderUpdateRecordTransaction{
@@ -56,10 +59,10 @@ rule ProviderUpdateRecordTransaction{
 rule ProviderCreateRecord{
 	description: "perms for addaccess"
 	participant(p): "org.blockchainboyz.medicalrecord.Provider"
-	operation: UPDATE
+	operation: CREATE
 	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
 	transaction(tx): "org.blockchainboyz.medicalrecord.CreateRecord"
-	condition: (tx.record.provider == p)
+	condition: (tx.record.provider.providerId == p.providerId)
 	action: ALLOW	
 }
 rule ProviderCreateRecordTransaction{
@@ -76,7 +79,7 @@ rule PatientTransferRecord{
 	operation: UPDATE
 	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
 	transaction(tx): "org.blockchainboyz.medicalrecord.TransferRecord"
-	condition: (tx.record.patient == p)
+	condition: (tx.record.patient.patientId == p.patientId)
 	action: ALLOW	
 }
 rule PatientTransferRecordTransaction{
@@ -94,7 +97,7 @@ rule PatientAddTrustedProvider{
 	operation: UPDATE
 	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
 	transaction(tx): "org.blockchainboyz.medicalrecord.AddTrustedProvider"
-	condition: (tx.patient == p)
+	condition: (tx.patient.patientId == p.patientId)
 	action: ALLOW	
 }
 rule PatientAddTrustedProviderTransaction{
@@ -112,7 +115,7 @@ rule PatientRemoveTrustedProvider{
 	operation: UPDATE
 	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
 	transaction(tx): "org.blockchainboyz.medicalrecord.RemoveTrustedProvider"
-	condition: (tx.patient == p)
+	condition: (tx.patient.patientId == p.patientId)
 	action: ALLOW	
 }
 rule PatientRemoveTrustedProviderTransaction{

@@ -1,3 +1,5 @@
+
+
 /**
  * @param {org.blockchainboyz.medicalrecord.UpdateRecord} transact 
  * @transaction
@@ -20,7 +22,7 @@ function UpdateRecord(transact) {
 */
 function TransferRecord(transact) {
   
-  transact.record.providers = transact.newProvider;
+  transact.record.provider = transact.newProvider;
   
   return getAssetRegistry('org.blockchainboyz.medicalrecord.MedicalRecord')
         .then(function (assetRegistry) {
@@ -36,13 +38,17 @@ function TransferRecord(transact) {
 */
 function CreateRecord(transact) {
   
-  var newrecord = {
-    	
-  };
+    var newrecord = getFactory().newResource('org.blockchainboyz.medicalrecord', 'MedicalRecord', 'MEDICALRECORD');
+
+    newrecord.patient = transact.patient;
+    newrecord.provider = transact.provider;
+    newrecord.format = "";
+    newrecord.data = "";
+
   
   return getAssetRegistry('org.blockchainboyz.medicalrecord.MedicalRecord')
         .then(function (assetRegistry) {
-            return assetRegistry.update(transact.record);
+            return assetRegistry.add(newrecord);
         });
   
 }
