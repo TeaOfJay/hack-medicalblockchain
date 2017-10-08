@@ -1,0 +1,2 @@
+2017-10-08T14:54:40.930Z ERROR   HLFConnectionManager    :fabric-client()          [client-utils.js]: sendPeersProposal - Promise is rejected: Error: chaincode error (status: 500, message: Error installing chaincode code medicalblockchain:0.13.2(chaincode /var/hyperledger/production/chaincodes/medicalblockchain.0.13.2 exists))
+    at /usr/local/lib/node_modules/composer-cli/node_modules/fabric-client/node_modules/grpc/src/node/src/client.js:434:17 {}$
