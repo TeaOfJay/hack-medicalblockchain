@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<head>
+	<script type="text/javascript">
+
+
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', "", true);
+
+			console.log(document.location.hostname);
+			xhr.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status == 200){
+					document.getElementById("output").innerHTML = xhr.responseText;
+
+				}
+			};
+			xhr.responseText = "record";
+			xhr.send();
+			console.log(document.location.hostname);
+			
+		
+
+	</script>
+</head>
+
+<body>
+	<form id="input">
+		<button type="button" id="button" class="inputplease">
+			SUBMIT
+		</button>
+		<input type="text">
+	</form>
+
+	<p id="output">
+			
+	</p>
+
+	
+</body> 
