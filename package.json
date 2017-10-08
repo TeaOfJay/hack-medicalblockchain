@@ -1,5 +1,5 @@
 {
-  "name": "fabric-dev-servers",
+  "name": "hack-medicalblockchain",
   "version": "0.0.5",
   "description": "Helper Scripts to start Hyperledger Fabric v1.0 for development/test purposes",
   "private": true,
@@ -17,6 +17,7 @@
   "dependencies": {
   },
   "scripts": {
+    "prepublish": "mkdirp ./dist ; composer archive create --sourceType dir --sourceName . -a ./dist/my-network.bna"
     "build-archives": "gulp --gulpfile .travis/gulp.js"
   },
   "devDependencies": {
