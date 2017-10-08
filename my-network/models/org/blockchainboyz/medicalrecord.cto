@@ -1,0 +1,43 @@
+/**
+ * New model file
+ */
+
+namespace org.blockchainboyz.medicalrecord
+
+asset MedicalRecord identified by recordSignature {
+  	o String format
+    o String data
+    o String recordSignature
+    --> Patient patient
+    --> Provider provider
+}
+participant Patient identified by patientId {
+    o String patientId
+    --> Provider[] trustedProviders
+}
+participant Provider identified by providerId {
+    o String providerId
+}
+
+
+transaction TransferRecord {
+    --> MedicalRecord record
+    --> Provider newProvider
+} 
+transaction CreateRecord {
+  	--> Patient patient
+  	--> Provider provider
+}
+transaction UpdateRecord {
+    o String newFormat
+    o String newData
+    --> MedicalRecord record
+}
+transaction AddTrustedProvider { 
+  	--> Provider provider
+    --> Patient patient
+}
+transaction RemoveTrustedProvider { 
+  	--> Provider provider
+    --> Patient patient
+}

@@ -1,22 +1,142 @@
-/**
- * New access control file
- */
- rule AllAccess {
-     description: "AllAccess - grant everything to everybody."
-     participant: "org.hyperledger.composer.system.Participant"
-     operation: ALL
-     resource: "org.hyperledger.composer.system.**"
-     action: ALLOW
- }
+rule ProviderPatientAccess{
+  	description: "allow providers to access patients"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.Patient"
+    condition: (r.trustedProviders.find(function(z){return z.providerId == p.providerId;}))
+	action: ALLOW
+}
 
-/**
-*
-*/
-rule PatientAccess {
-  description: "PatientAccess - grant patient read-only to records."
-  participant(user): "org.blockchainboyz.users.Patient"
+rule ProviderAccess{
+	description: "allow providers to access records"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.MedicalRecord"
+      condition: (r.patient.trustedProviders.find(function(z){return z.providerId == p.providerId;}))
+	action: ALLOW
+}
+
+rule PatientAccess{
+	description: "allow patients to access records"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.MedicalRecord"
+	condition: (r.patient == p)
+	action: ALLOW
+}
+
+rule PatientSelfAccess{
+	description: "allow patients to access records"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: READ
+	resource(r): "org.blockchainboyz.medicalrecord.Patient"
+	condition: (r == p)
+	action: ALLOW	
+}
+
+
+rule ProviderUpdateRecord{
+	description: "perms for updaterecord"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: UPDATE
+	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
+	transaction(tx): "org.blockchainboyz.medicalrecord.UpdateRecord"
+	condition: (tx.record.provider == p)
+	action: ALLOW
+}
+rule ProviderUpdateRecordTransaction{
+	description: "perms for updaterecord tx"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: CREATE
+	resource: "org.blockchainboyz.medicalrecord.UpdateRecord"
+	condition: (true)
+	action: ALLOW	
+}
+
+rule ProviderCreateRecord{
+	description: "perms for addaccess"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: UPDATE
+	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
+	transaction(tx): "org.blockchainboyz.medicalrecord.CreateRecord"
+	condition: (tx.record.provider == p)
+	action: ALLOW	
+}
+rule ProviderCreateRecordTransaction{
+	description: "perms for addaccess tx"
+	participant(p): "org.blockchainboyz.medicalrecord.Provider"
+	operation: CREATE
+	resource: "org.blockchainboyz.medicalrecord.CreateRecord"
+	condition: (true)
+	action: ALLOW	
+}
+rule PatientTransferRecord{
+	description: "perms for forfeitaccess"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: UPDATE
+	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
+	transaction(tx): "org.blockchainboyz.medicalrecord.TransferRecord"
+	condition: (tx.record.patient == p)
+	action: ALLOW	
+}
+rule PatientTransferRecordTransaction{
+	description: "perms for forefietaccess tx"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: CREATE
+	resource: "org.blockchainboyz.medicalrecord.TransferRecord"
+	condition: (true)
+	action: ALLOW	
+}
+
+rule PatientAddTrustedProvider{
+	description: "perms for forfeitaccess"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: UPDATE
+	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
+	transaction(tx): "org.blockchainboyz.medicalrecord.AddTrustedProvider"
+	condition: (tx.patient == p)
+	action: ALLOW	
+}
+rule PatientAddTrustedProviderTransaction{
+	description: "perms for forefietaccess tx"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: CREATE
+	resource: "org.blockchainboyz.medicalrecord.AddTrustedProvider"
+	condition: (true)
+	action: ALLOW	
+}
+
+rule PatientRemoveTrustedProvider{
+	description: "perms for forfeitaccess"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: UPDATE
+	resource: "org.blockchainboyz.medicalrecord.MedicalRecord"
+	transaction(tx): "org.blockchainboyz.medicalrecord.RemoveTrustedProvider"
+	condition: (tx.patient == p)
+	action: ALLOW	
+}
+rule PatientRemoveTrustedProviderTransaction{
+	description: "perms for forefietaccess tx"
+	participant(p): "org.blockchainboyz.medicalrecord.Patient"
+	operation: CREATE
+	resource: "org.blockchainboyz.medicalrecord.RemoveTrustedProvider"
+	condition: (true)
+	action: ALLOW	
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
   operation: READ
-  resource(res): "org.blockchainboyz.record.MedicalRecord"
-  condition:(res.owner.patientId == user.patientId)
+  resource: "org.hyperledger.composer.system.**"
   action: ALLOW
+}
+
+rule SystemTX{
+  description: "allow participants to access transmissions"
+	participant(p): "org.hyperledger.composer.system.Participant"
+	operation: CREATE
+	resource(r): "org.hyperledger.composer.system.HistorianRecord"
+      condition: (true)
+	action: ALLOW
 }
